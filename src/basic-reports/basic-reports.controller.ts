@@ -39,7 +39,18 @@ export class BasicReportsController {
       await this.basicReportsService.employmentLetterById(+employeeId);
 
     response.setHeader('Content-Type', 'application/pdf');
-    pdfDoc.info.Title = 'Carta de empleo';
+    pdfDoc.info.Title = 'Carta de empleo con datos del empleado';
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  // Listado de paises (tabla)
+  @Get('countries')
+  async countriesReport(@Res() response: Response) {
+    const pdfDoc = await this.basicReportsService.countryReport();
+
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.info.Title = 'Countries Report';
     pdfDoc.pipe(response);
     pdfDoc.end();
   }

@@ -1,8 +1,12 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { PrinterService } from 'src/printer/printer.service';
-import { getEmploymentLetterByIdReport, getEmploymentLetterReport, getHelloWorldReport } from 'src/reports';
+import {
+  getCountryReport,
+  getEmploymentLetterByIdReport,
+  getEmploymentLetterReport,
+  getHelloWorldReport,
+} from 'src/reports';
 
 @Injectable()
 export class BasicReportsService extends PrismaClient implements OnModuleInit {
@@ -53,6 +57,24 @@ export class BasicReportsService extends PrismaClient implements OnModuleInit {
     });
 
     // creamos un documento usando el printerService mediante la inyeccion de dependencias
+    const doc = this.printerService.createPdf(docDefinition);
+    return doc;
+  }
+
+  // tabla de paises
+  async countryReport() {
+    // podriamos tomar un parametro de continente por ejemplo y mostrar solo los paises de ese continente
+
+    const countries = await this.countries.findMany({
+      where: {
+        local_name: {
+          not: null,
+        },
+      },
+    });
+
+    const docDefinition = getCountryReport({ countries: countries });
+
     const doc = this.printerService.createPdf(docDefinition);
     return doc;
   }
