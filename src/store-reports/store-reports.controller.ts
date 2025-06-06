@@ -11,7 +11,7 @@ export class StoreReportsController {
     @Param('orderId') orderId: string,
     @Res() response: Response,
   ) {
-    const pdfDoc = await this.storeReportsService.getOrderByIdReport(orderId);
+    const pdfDoc = await this.storeReportsService.getOrderByIdReport(+orderId);
 
     response.setHeader('Content-Type', 'application/pdf');
     pdfDoc.info.Title = 'Order-Report';
