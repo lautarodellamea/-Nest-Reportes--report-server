@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import * as Utils from '../helpers/chart-utils'
+import * as Utils from '../helpers/chart-utils';
 
 const svgContent = fs.readFileSync('src/assets/ford.svg', 'utf-8');
 
@@ -24,9 +24,45 @@ const generateChartImage = async () => {
   return await Utils.chartJsToImage(chartConfig);
 };
 
+const generateDonut = async () => {
+  const DATA_COUNT = 5;
+  const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100 };
+
+  const data = {
+    labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: Utils.numbers(NUMBER_CFG),
+        backgroundColor: Object.values(Utils.CHART_COLORS),
+      },
+    ],
+  };
+
+  const config = {
+    type: 'doughnut',
+    data: data,
+    options: {
+      title: {
+        display: true,
+        text: 'Chart.js Doughnut Chart',
+      },
+    },
+  };
+
+  return await Utils.chartJsToImage(config);
+};
+
 export const getBasicChartSvgReport =
   async (): Promise<TDocumentDefinitions> => {
-    const chart = await generateChartImage();
+    // disparamos ambas promesas al mismo tiempo y se espera a que ambas se resuelvan
+    const [chart, chartDonut] = await Promise.all([
+      generateChartImage(),
+      generateDonut(),
+    ]);
+
+    // const chart = await generateChartImage();
+    // const chartDonut = await generateDonut();
 
     return {
       content: [
@@ -37,6 +73,10 @@ export const getBasicChartSvgReport =
         },
         {
           image: chart,
+          width: 500,
+        },
+        {
+          image: chartDonut,
           width: 500,
         },
       ],

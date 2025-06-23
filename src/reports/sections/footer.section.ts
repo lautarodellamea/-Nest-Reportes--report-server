@@ -12,6 +12,6 @@ export const footerSection = (
     alignment: 'right',
     fontSize: 12,
     bold: true,
-    margin: [0, 10, 10, 0],
+    margin: [0, 10, 20, 0],
   };
 };
